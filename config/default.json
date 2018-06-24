@@ -1,0 +1,8 @@
+{
+  "MONGO_URI": "mongodb://127.0.0.1:27017",
+  "MONGO_DB": "database",
+  "STRIPE_SECRET_KEY": "",
+  "STRIPE_PUBLISHABLE_KEY": "",
+  "ORIGIN": "http://localhost:8080",
+  "SERVER_PORT": "8089"
+}

@@ -6,28 +6,49 @@
     "node": "8.10.0"
   },
   "scripts": {
-    "start": "NODE_ENV=production node dist/index.js",
-    "dev": "parcel index.html -p 8888",
-    "build": "parcel build server/index.tsx --target=node8"
+    "start": "NODE_ENV=production node dist/server.js",
+    "app": "parcel index.html -p 8080 --open",
+    "server": "parcel watch server/server.tsx --target=node --out-file=server.js --no-source-maps | nodemon dist/server.js",
+    "build": "parcel build app/app.tsx --out-file=app.js --no-source-maps --no-cache && parcel build server/server.tsx --target=node --out-file=server.js --no-source-maps --no-cache"
   },
   "keywords": [],
   "author": "Phillip Malboeuf <phil@boeuf.coffee>",
   "license": "",
   "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/body-parser": "^1.17.0",
     "@types/compression": "0.0.36",
-    "@types/express": "^4.11.1",
-    "@types/react": "^16.0.40",
-    "@types/react-dom": "^16.0.4",
-    "@types/react-router-dom": "^4.2.5"
+    "@types/cors": "^2.8.4",
+    "@types/express": "^4.16.0",
+    "@types/jsonschema": "^1.1.1",
+    "@types/mongodb": "^3.0.21",
+    "@types/morgan": "^1.7.35",
+    "@types/nconf": "0.0.37",
+    "@types/react": "^16.4.1",
+    "@types/react-dom": "^16.0.6",
+    "@types/react-router-dom": "^4.2.7",
+    "@types/stripe": "^5.0.15",
+    "nodemon": "^1.17.5"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "browser-cookies": "^1.2.0",
     "compression": "^1.7.2",
+    "cors": "^2.8.4",
     "express": "^4.16.3",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-router-dom": "^4.2.2",
-    "node-sass": "^4.7.2",
-    "parcel-bundler": "^1.6.2",
-    "typescript": "^2.8.0-rc"
+    "html-react-parser": "^0.4.6",
+    "jsonschema": "^1.2.4",
+    "mongodb": "^3.0.10",
+    "morgan": "^1.9.0",
+    "nconf": "^0.10.0",
+    "node-sass": "^4.9.0",
+    "parcel-bundler": "^1.9.2",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-router-dom": "^4.3.1",
+    "stripe": "^6.1.1",
+    "typescript": "^2.9.2",
+    "with-context": "0.0.3"
   }
 }

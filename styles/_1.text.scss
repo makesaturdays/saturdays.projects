@@ -136,6 +136,7 @@ a {
   &.a--focus {
     text-decoration: underline;
 
+    &.underline,
     .underline_links & {
       color: $highlight;
     }

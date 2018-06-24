@@ -6,7 +6,7 @@ interface Props {}
 interface State {}
 
 
-export default class Footer extends React.Component<Props, State> {
+export class Footer extends React.Component<Props, State> {
 
   constructor(props: {}) {
     super(props)

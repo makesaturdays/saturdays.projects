@@ -69,15 +69,11 @@ footer {
 // #MIXINS
 
 .max_width {
-  max-width: $max_width/2;
+  max-width: $max_width;
 
   &.max_width--center {
     margin-right: auto;
     margin-left: auto;
-  }
-
-  &.max_width--big {
-    max-width: $max_width/1.5;
   }
 }
 

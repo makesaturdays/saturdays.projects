@@ -1,27 +1,37 @@
 
-import * as React from "react"
+import * as React from 'react'
+import { Link } from 'react-router-dom'
 
-import { Icon } from "./icon"
-
+import { AppContext } from '../context'
+import { Icon } from './icon'
+import { P } from './piece'
 
 interface Props {}
-interface State {}
 
+export const Header: React.SFC<Props> = (props) => {
+  return <AppContext.Consumer>
+      {(context) => <header>
+      <div className='grid grid--spaced'>
+        <div>
+          <Link to='/' className='grid grid--middle'>
+            <Icon i='logo' big highlight />
+            <h1 className="h1--base spaced"><P piece={context.pieces.index} k='title' /></h1>
+          </Link>
+        </div>
 
-export default class Header extends React.Component<Props, State> {
-
-  constructor(props: {}) {
-    super(props)
-    this.state = {}
-  }
-
-
-  public render() {
-    return <header>
-      <a href="/" className="grid grid--middle">
-        <Icon icon="logo" big highlight />
-        <h1 className="h1--base spaced">Make Saturdays</h1>
-      </a>
-    </header>
-  }
+        <div>
+          {context.user && context.user._id 
+            ? <>
+              <Link to='/subscription'>Your Subscription</Link><br />
+              <Link to='/logout'>Logout</Link>
+            </>
+            : <>
+              <Link to='/subscribe'>Subscribe</Link><br />
+              <Link to='/login'>Login</Link>
+            </>
+          }
+        </div>
+      </div>
+    </header>}
+  </AppContext.Consumer>
 }
