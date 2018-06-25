@@ -1,6 +1,6 @@
 
 import Model from './_model'
-import Review from './review'
+import Commnt from './commnt'
 
 export default class Product extends Model {
   static endpoint = 'products'
@@ -14,7 +14,7 @@ export default class Product extends Model {
   }
 
   public reviews() {
-    return (this.constructor as typeof Model).request('GET', `/${this._id}/reviews`)
-      .then(reviews => reviews.map((review: {}) => new Review(review)))
+    return (this.constructor as typeof Model).request('GET', `/${this._id}/comments`)
+      .then(comments => comments.map((comment: {}) => new Commnt(comment)))
   }
 }
