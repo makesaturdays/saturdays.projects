@@ -20,5 +20,8 @@ export const date = (value, lang='en', time=true) =>
 
 
 
-export const weekday = (value) =>
-  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(value).getDay()]
+export const weekday = (date: Date) =>
+  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()]
+
+export const month = (date: Date) =>
+  ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][date.getMonth()]
