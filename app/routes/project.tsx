@@ -5,6 +5,7 @@ import { context } from '../context'
 import { Link, RouteComponentProps } from 'react-router-dom'
 
 import Project from '../models/project'
+import { Tags } from '../components/tags'
 
 
 interface Props extends RouteComponentProps<any> {
@@ -35,9 +36,10 @@ export class ProjectView extends React.Component<Props, State> {
 
   public render() {
     return <div className='padded padded--big_top'>
-      <div>
-        {this.state.project && <h1>{this.state.project.attributes.name}</h1>}
-      </div>
+      {this.state.project && <div>
+        <h1>{this.state.project.attributes.name}</h1>
+        <Tags selected={this.state.project.attributes.tags} path='/projects?tagged=' tags={[{key: 'design', title: 'Design'}, {key: 'code', title: 'Code'}]} />
+      </div>}
     </div>
   }
 }

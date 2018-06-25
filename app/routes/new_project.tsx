@@ -35,6 +35,7 @@ export class NewProjectView extends React.Component<Props, State> {
         <Form model={this.state.project} cta='Create'>
           <Input label='Project name' name='name' />
           <Input type='textarea' label='Description' name='description' />
+          <Input type='tags' label='Tags' name='tags' tags={[{key: 'design', title: 'Design'}, {key: 'code', title: 'Code'}]} />
         </Form>
       </div>
     </div>}
