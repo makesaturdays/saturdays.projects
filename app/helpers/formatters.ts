@@ -1,4 +1,4 @@
-export const date = (value, lang='en', time=true) =>
+export const date = (value, lang='en', time=true) => 
   new Date(value)
     .toLocaleDateString(
       lang === 'fr' ? 'fr-CA' : 'en-us',
@@ -17,3 +17,8 @@ export const date = (value, lang='en', time=true) =>
       )
     )
     .replace(/,/g, '')
+
+
+
+export const weekday = (value) =>
+  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(value).getDay()]
