@@ -1,5 +1,4 @@
 
-
 import * as React from 'react'
 import { context } from '../context'
 
@@ -14,31 +13,30 @@ interface Props extends RouteComponentProps<any> {
   }
 }
 interface State {
-  projects: Project[]
+  project: Project
 }
 
 
 @context
-export class Home extends React.Component<Props, State> {
+export class ProjectView extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
     this.state = {
-      projects: null
+      project: props.context.response ? new Project(props.context.response) : new Project({_id: props.match.params._id})
     }
   }
   
 
   componentDidMount() {
-    Project.list().then(projects => this.setState({ projects }))
+    this.state.project.fetch().then(project => this.setState({ project }))
   }
 
 
   public render() {
     return <div className='padded padded--big_top'>
       <div>
-        <h1>Make Saturdays</h1>
-        {this.state.projects && this.state.projects.map(project => <Link to={`/projects/${project._id}`} key={project._id}>{project.attributes.name}</Link>)}
+        {this.state.project && <h1>{this.state.project.attributes.name}</h1>}
       </div>
     </div>
   }

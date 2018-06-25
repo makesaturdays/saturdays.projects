@@ -3,6 +3,7 @@ import express, { Application, Request, Response } from 'express'
 import cors from 'cors'
 import compression from 'compression'
 import morgan from 'morgan'
+import * as bodyparser from 'body-parser'
 
 import * as ReactDOM from 'react-dom/server'
 import * as React from 'react'
@@ -18,6 +19,7 @@ import Session from './models/session'
 import Piece from './models/piece'
 import Product from './models/product'
 import Subscription from './models/subscription'
+import Project from './models/project'
 
 
 
@@ -25,6 +27,7 @@ interface Server extends Application {}
 
 export const server: Server = express()
 server.use(cors({origin: CONF('ORIGIN').split(','), credentials: true}))
+server.use(bodyparser.json())
 server.use(compression())
 server.use(morgan('dev'))
 
@@ -35,6 +38,7 @@ const models = [
   User,
   Session,
   Piece,
+  Project,
   Product,
   Subscription
 ]

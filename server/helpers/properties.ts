@@ -19,3 +19,9 @@ export const TEXT = {
   maximum: 10000,
   required: true
 }
+
+export const OBJECT_ID = {
+  type: 'string',
+  maximum: 10000,
+  required: true
+}

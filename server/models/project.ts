@@ -12,6 +12,6 @@ export default class Project extends Model {
   static properties = {
     name: TEXT,
     description: TEXT,
-    location_id: OBJECT_ID
+    location_id: {...OBJECT_ID, required: false}
   }
 }

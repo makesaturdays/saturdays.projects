@@ -8,6 +8,8 @@ import { Login } from './routes/login'
 import { Logout } from './routes/logout'
 import { SubscriptionView } from './routes/subscription'
 import { ProductView } from './routes/product'
+import { NewProjectView } from './routes/new_project';
+import { ProjectView } from './routes/project';
 
 
 interface Props {}
@@ -24,6 +26,8 @@ export const Routes: React.SFC<Props> = (props) => {
       <Redirect from='/subscriptions/:_id' to='/subscription' />
 
       <Route exact path='/products/:_id' component={ProductView} />
+      <Route exact path='/projects/new' component={NewProjectView} />
+      <Route exact path='/projects/:_id' component={ProjectView} />
 
       <Route exact path='/' component={Home} />
     </Switch>
