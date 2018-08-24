@@ -1,7 +1,7 @@
 
 import * as React from 'react'
-import { Link } from 'react-router-dom';
-import { weekday } from '../helpers/formatters';
+import { Link } from 'react-router-dom'
+import { weekday } from '../helpers/formatters'
 
 
 interface Props {}

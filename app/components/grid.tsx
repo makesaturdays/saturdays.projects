@@ -1,13 +1,16 @@
 
 import * as React from 'react'
+
 interface GridProps {
   guttered?: boolean,
+  center?: boolean,
+  middle?: boolean,
   spaced?: boolean,
-  middle?: boolean
+  thick?: boolean
 }
 
 export const Grid: React.SFC<GridProps> = (props) => {
-  return <div className={`grid${props.guttered ? ' grid--guttered' : ''}${props.middle ? ' grid--middle' : ''}${props.spaced ? ' grid--spaced' : ''}`}>{props.children}</div>
+  return <div className={`grid${props.guttered ? ' grid--guttered' : ''}${props.thick ? ' grid--thick_guttered' : ''}${props.center ? ' grid--center' : ''}${props.middle ? ' grid--middle' : ''}${props.spaced ? ' grid--spaced' : ''}`}>{props.children}</div>
 }
 
 interface ColProps {

@@ -1,7 +1,7 @@
 
 
 import * as React from 'react'
-import { Grid, Seventh } from './grid';
+import { Grid, Seventh } from './grid'
 import { weekday, month } from '../helpers/formatters'
 import { Button } from './button'
 
@@ -54,7 +54,7 @@ export class Week extends React.Component<Props, State> {
     })
     
     return <Grid>
-
+      
       <Grid spaced>
         <Button onClick={()=> this.backward()} label='❮' />
 

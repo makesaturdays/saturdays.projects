@@ -1,11 +1,13 @@
 
 import * as React from 'react'
-import { context } from '../context'
 
 import { Link, RouteComponentProps } from 'react-router-dom'
 
+import { withContext } from '../contexts/app'
 import Project from '../models/project'
-import { Tags } from '../components/tags'
+
+// import { Tags } from '../components/tags'
+
 
 
 interface Props extends RouteComponentProps<any> {
@@ -18,7 +20,7 @@ interface State {
 }
 
 
-@context
+@withContext
 export class ProjectView extends React.Component<Props, State> {
 
   constructor(props: Props) {
@@ -38,7 +40,7 @@ export class ProjectView extends React.Component<Props, State> {
     return <div className='padded padded--big_top'>
       {this.state.project && <div>
         <h1>{this.state.project.attributes.name}</h1>
-        <Tags selected={this.state.project.attributes.tags} path='/projects?tagged=' tags={[{key: 'design', title: 'Design'}, {key: 'code', title: 'Code'}]} />
+        {/* <Tags selected={this.state.project.attributes.tags} path='/projects/tagged/' tags={[{key: 'design', title: 'Design'}, {key: 'code', title: 'Code'}]} /> */}
       </div>}
     </div>
   }

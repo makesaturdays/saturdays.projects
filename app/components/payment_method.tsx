@@ -1,20 +1,20 @@
 
 import * as React from 'react'
-import { FormContext } from './form'
+import { withFormContext, FormContextProps } from '../contexts/form'
 import { Input } from './input'
 import { Address, Props as AddressProps } from './address'
 
 interface Props {
   name: string,
   address?: AddressProps,
-  value?: any,
-  label?: string
+  value?: any
 }
 interface State {
   token: string
 }
 
-export class PaymentMethod extends React.Component<Props, State> {
+@withFormContext
+export class PaymentMethod extends React.Component<Props & FormContextProps, State> {
 
   stripe: any
   elements: any
@@ -40,28 +40,30 @@ export class PaymentMethod extends React.Component<Props, State> {
       invalid: { color: "#E14B3C", iconColor: "#E14B3C" }
     } }
 
-    this.stripe = Stripe('pk_test_W9K3sLk7MpKZoUfjB41FCJ7Z')
+    this.stripe = window.Stripe('pk_test_W9K3sLk7MpKZoUfjB41FCJ7Z')
     this.elements = this.stripe.elements()
     this.number = this.elements.create('cardNumber', style)
     this.expiry = this.elements.create('cardExpiry', style)
     this.cvc = this.elements.create('cardCvc', style)
-    this.number.addEventListener('change', (e: Event) => this.onChange(e, this.number))
-    this.expiry.addEventListener('change', (e: Event) => this.onChange(e, this.expiry))
-    this.cvc.addEventListener('change', (e: Event) => this.onChange(e, this.cvc))
+    this.number.addEventListener('change', (e: {complete: boolean} & Event) => this.onChange(e, this.number))
+    this.expiry.addEventListener('change', (e: {complete: boolean} & Event) => this.onChange(e, this.expiry))
+    this.cvc.addEventListener('change', (e: {complete: boolean} & Event) => this.onChange(e, this.cvc))
 
     this.number.mount(this.number_element)
     this.expiry.mount(this.expiry_element)
     this.cvc.mount(this.cvc_element)
   }
 
-  onChange(event: Event, element: any) {
-    element.complete = event.complete;
+  onChange(event: {complete: boolean} & Event, element: any) {
+    element.complete = event.complete
     if (this.number.complete && this.expiry.complete && this.cvc.complete) {
       this.stripe.createToken(this.number).then((result: any) => {
-        this.context.onChange({
+        this.props.context.onChange({
           currentTarget: {
-            name: `${this.props.name}.token`,
-            value: result.token.id
+            name: this.props.name,
+            value: {
+              token: result.token.id
+            }
           }
         })
       })
@@ -71,8 +73,7 @@ export class PaymentMethod extends React.Component<Props, State> {
 
   public render() {
     return <>
-      <label>{this.props.label}</label>
-      <div className='grid grid--guttered'>
+      <div className='grid grid--tight_guttered'>
         <div className='col col--9of12'>
           <label>Credit Card #</label>
           <div className='input' ref={(div) => { this.number_element = div }} />
@@ -86,13 +87,6 @@ export class PaymentMethod extends React.Component<Props, State> {
           <div className='input' ref={(div) => { this.cvc_element = div }} />
         </div>
       </div>
-
-      <FormContext.Consumer>
-        {(context) => {
-          this.context = context
-          return null
-        }}
-      </FormContext.Consumer>
     </>
   }
 }

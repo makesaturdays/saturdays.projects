@@ -7,7 +7,7 @@ export class ResponseError extends Error {
   date: Date
   fields?: {[name:string]: any}
 
-  constructor(message, status = 400, fields?) {
+  constructor(message: string, status = 400, fields?: {[name: string]: any}) {
     super(message)
 
     this.status = status

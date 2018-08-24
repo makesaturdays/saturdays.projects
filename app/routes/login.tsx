@@ -2,14 +2,14 @@
 import * as React from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
 
-import { AppContext } from '../context'
-
-import { Button } from '../components/button'
-import { Form } from '../components/form'
-import { Input } from '../components/input'
+import { withContext, AppContextProps } from '../contexts/app'
 
 import Session from '../models/session'
-import User from '../models/user';
+import User from '../models/user'
+
+import { Form } from '../components/form'
+import { Input } from '../components/input'
+import { Grid, Half } from '../components/grid'
 
 
 interface Props extends RouteComponentProps<any> {}
@@ -17,7 +17,8 @@ interface State {
   session: Session
 }
 
-export class Login extends React.Component<Props, State> {
+@withContext
+export class Login extends React.Component<Props & AppContextProps, State> {
 
   constructor(props: Props) {
     super(props)
@@ -35,16 +36,16 @@ export class Login extends React.Component<Props, State> {
   }
 
   public render() {
-    return <AppContext.Consumer>
-      {(context) => <div className='padded'>
-      <div className=''>
-        <Form model={this.state.session} onSubmit={(e, state)=> this.fetchUser(context.user, state.model.attributes.user_id)} cta='Login'>
+    return <Grid center>
+      <Half>
+        <Form id='login' model={this.state.session} onSubmit={(e, state)=> this.props.context.fetchUser()} cta='Login'>
           <Input label='Email Address' name='email' />
           <Input label='Password' type='password' name='password' />
         </Form>
-      </div>
-    </div>}
-    </AppContext.Consumer>
+
+        <Link to='/subscribe' className='underline'>I'm not yet subscribed</Link>
+      </Half>
+    </Grid>
   }
 }
 

@@ -1,14 +1,18 @@
 
-import { ObjectId } from 'mongodb'
+import { Request } from 'express'
 
-import Model from './_model'
+import Model, { Filters, Endpoints } from './_model'
 
 export default class Piece extends Model {
   static collection = 'pieces'
+  static properties = {
+    content: {
+      type: 'object'
+    }
+  }
 
-
-  static list(filters, limit=50, page=0, sort?) {
-    return super.list(filters).then(pieces => pieces.reduce((values, piece)=> {
+  static pieces(filters: Filters): Promise<{[route: string]: any}> {
+    return super.list(filters).then(pieces => pieces.reduce((values: {[route: string]: any}, piece: any)=> {
       values[piece.route] = {
         ...piece.content,
         _id: piece._id
@@ -17,10 +21,13 @@ export default class Piece extends Model {
     }, {}))
   }
 
-
-  static endpoints() {
-    return [
-      ...super.endpoints()
-    ]
+  static endpoints(): Endpoints {
+    return {
+      [`/${this.collection}`]: {
+        'GET': {
+          function: (req: Request): Promise<{[route: string]: any}> => this.pieces({})
+        }
+      }
+    }
   }
 }

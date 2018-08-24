@@ -1,11 +1,10 @@
 
 import * as React from 'react'
-import { context } from '../context'
 
 import { Link, RouteComponentProps } from 'react-router-dom'
 
 import Product from '../models/product'
-import { Reviews } from '../components/reviews'
+import { withContext } from '../contexts/app'
 
 
 interface Props extends RouteComponentProps<any> {
@@ -19,7 +18,7 @@ interface State {
 }
 
 
-@context
+@withContext
 export class ProductView extends React.Component<Props, State> {
 
   constructor(props: Props) {
@@ -33,7 +32,6 @@ export class ProductView extends React.Component<Props, State> {
 
   componentDidMount() {
     this.state.product.fetch().then(product => this.setState({ product }))
-    this.state.product.plans().then(plans => this.setState({ plans }))
   }
 
 
@@ -41,8 +39,6 @@ export class ProductView extends React.Component<Props, State> {
     return <div className='padded'>
       <div>
         {this.state.product && <h1>{this.state.product.attributes.name}</h1>}
-        {this.state.plans && this.state.plans.map(plan => <h2 key={plan.id}>{plan.id}</h2>)}
-        <Reviews product={this.state.product} />
       </div>
     </div>
   }

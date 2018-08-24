@@ -1,4 +1,4 @@
-export const date = (value, lang='en', time=true) => 
+export const date = (value: string, time=true, lang='en') => 
   new Date(value)
     .toLocaleDateString(
       lang === 'fr' ? 'fr-CA' : 'en-us',
@@ -18,10 +18,11 @@ export const date = (value, lang='en', time=true) =>
     )
     .replace(/,/g, '')
 
-
-
 export const weekday = (date: Date) =>
   ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()]
 
 export const month = (date: Date) =>
   ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][date.getMonth()]
+
+export const money = (value: number, lang='en') =>
+  `$${(value / 100).toFixed(2)}`

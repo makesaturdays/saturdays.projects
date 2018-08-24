@@ -47,7 +47,7 @@ export default class Model {
       })
   }
 
-  public save(data: {[key:string]: any}) {
+  public save(data: any) {
     return (this.constructor as typeof Model).request(this._id ? 'PUT' : 'POST', `${this._id ? `/${this._id}` : ''}`, data)
       .then(json => {
         this.error = undefined

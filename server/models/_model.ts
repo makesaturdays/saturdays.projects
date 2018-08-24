@@ -1,5 +1,5 @@
 
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { MongoClient, ObjectId, Db } from 'mongodb'
 import { validate } from 'jsonschema'
 
@@ -8,12 +8,34 @@ import { CONF } from '../../config'
 import { ResponseError } from '../helpers/errors'
 
 
+export interface Endpoints {
+  [endpoint: string]: {
+    [method: string]: {
+      function: (req: Request, res?: Response) => Promise<any>,
+      middlewares?: ((req: Request, res: Response, next?: NextFunction) => void)[],
+      component?: React.ComponentClass
+    }
+  }
+}
+
+export interface Properties {
+  [key: string]: any
+}
+export interface Filters {
+  [key: string]: any
+}
+export interface Sort {
+  [key: string]: 1 | -1
+}
+
+export type Id = string | ObjectId
+
 
 export default class Model {
   static db: Db
   static collection: string
-  static sort = []
-  static properties = {}
+  static sort: Sort
+  static properties: Properties = {}
 
   static preprocess(data: any) {
     return Promise.resolve(data)
@@ -24,25 +46,22 @@ export default class Model {
   }
 
 
-  static list(filters, limit=50, page=0, sort?) {
-    delete filters.limit
-    delete filters.page
-    delete filters.sort
+  static list(filters: Filters, limit=50, page=0, sort?: Sort) {
     return this.db.collection(this.collection).find(filters, { limit, skip: limit ? page * limit : 0, sort: sort || this.sort }).toArray()
       .then(models => Promise.all(models.map(model => this.postprocess(model))))
   }
 
 
-  static get(_id) {
+  static get(_id: Id) {
     return this.get_where({ _id: new ObjectId(_id) })
   }
 
-  static get_where(filters) {
+  static get_where(filters: Filters) {
     return this.db.collection(this.collection).findOne(filters)
       .then(model => this.postprocess(model))
   }
 
-  static create(data) {
+  static create(data: any) {
     return this.preprocess(data).then(data =>
       this.db.collection(this.collection).insertOne({
         created_at: new Date(),
@@ -51,48 +70,62 @@ export default class Model {
     ).then(result => ({ _id: result.insertedId }))
   }
 
-  static update(_id, data) {
+  static update(_id: Id, data: any) {
     return this.update_where({ _id: new ObjectId(_id) }, data)
   }
 
-  static update_where(filters, data) {
+  static update_where(filters: Filters, data: any) {
     return this.preprocess(data).then(data =>
       this.db.collection(this.collection).findOneAndUpdate(filters, { '$set': data }, { returnOriginal: false })
     ).then(result => this.postprocess(result.value))
   }
 
-  static destroy(_id) {
-    return this.db.collection(this.collection).deleteOne({ _id: new ObjectId(_id) })
+  static destroy(_id: Id) {
+    return this.destroy_where({ _id: new ObjectId(_id) })
+  }
+
+  static destroy_where(filters: Filters) {
+    return this.db.collection(this.collection).deleteOne(filters)
       .then(result => ({ deleted: result.result.n }))
   }
 
-  static aggregate(pipeline) {
+  static aggregate(pipeline: any[]) {
     return this.db.collection(this.collection).aggregate(pipeline)
   }
 
-  static commnts(_id) {
+  
+  static tagged(tags: string[], limit=50, page=0, sort?: Sort) {
+    return this.list({tags: {'$all': tags}}, limit, page, sort)
+  }
+
+
+  static commnts(_id: Id) {
     return require('./commnt').list({ route: `${this.collection}/${_id}` })
   }
 
-  static validate(data) {
+  static validate(data: any, update=false): any {
     
     Object.keys(data).forEach(key => {
       if (this.properties[key] === undefined) {
         delete data[key]
-      } else {
-        if (this.properties[key].type === 'integer') {
-          data[key] = parseInt(data[key])
-        }
+      } else if (this.properties[key].sanitize) {
+        data[key] = this.properties[key].sanitize(data[key])
       }
     })
 
     const validation = validate(data, {
       type: 'object',
-      properties: this.properties
+      properties: update ? Object.keys(this.properties).reduce((properties: Properties, k)=> {
+        properties[k] = {
+          ...this.properties[k],
+          required: false
+        }
+        return properties
+      }, {}) : this.properties
     })
 
     if (validation.errors.length > 0) {
-      throw new ResponseError('validation error', 400, validation.errors.reduce((fields, error)=> {
+      throw new ResponseError('validation error', 400, validation.errors.reduce((fields: {[name: string]: string}, error)=> {
         const name = error.property.replace('instance.', '')
         fields[name] = this.properties[name].message
           ? this.properties[name].message
@@ -106,49 +139,29 @@ export default class Model {
   }
 
 
-  static endpoints() : {
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-    endpoint: string,
-    function: (req: Request) => Promise<any> | Promise<any[]> | Promise<{ _id: ObjectId }> | Promise<{ deleted: number }>
-  }[] {
-    return [
-      {
-        method: 'GET',
-        endpoint: `/${this.collection}`,
-        function: (req: Request) : Promise<any[]> => this.list(req.query, req.query.limit, req.query.page, req.query.sort)
+  static endpoints() : Endpoints {
+    return {
+      [`/${this.collection}`]: {
+        'GET': {
+          function: (req: Request) : Promise<any[]> => this.list(null, req.query.limit, req.query.page, req.query.sort)
+        },
+        'POST': {
+          function: (req: Request) : Promise<{ _id: ObjectId }> => this.create(this.validate(req.body))
+        }
       },
-      {
-        method: 'POST',
-        endpoint: `/${this.collection}`,
-        function: (req: Request) : Promise<{ _id: ObjectId }> => this.create(this.validate(req.body))
-      },
-      {
-        method: 'GET',
-        endpoint: `/${this.collection}/:id`,
-        function: (req: Request) : Promise<any> => this.get(req.params.id)
-      },
-      {
-        method: 'PUT',
-        endpoint: `/${this.collection}/:id`,
-        function: (req: Request) : Promise<any> => this.update(req.params.id, this.validate(req.body))
-      },
-      {
-        method: 'DELETE',
-        endpoint: `/${this.collection}/:id`,
-        function: (req: Request) : Promise<{ deleted: number }> => this.destroy(req.params.id)
-      },
-      {
-        method: 'GET',
-        endpoint: `/${this.collection}/:id/comments`,
-        function: (req: Request) : Promise<any[]> => this.commnts(req.params.id)
+      [`/${this.collection}/:id`]: {
+        'GET': {
+          function: (req: Request) : Promise<any> => this.get(req.params.id)
+        },
+        'PUT': {
+          function: (req: Request) : Promise<any> => this.update(req.params.id, this.validate(req.body, true))
+        },
+        'DELETE': {
+          function: (req: Request) : Promise<{ deleted: number }> => this.destroy(req.params.id)
+        }
       }
-    ]
+    }
   }
-
-  static components(data: any) {
-    return {}
-  }
-
 }
 
 

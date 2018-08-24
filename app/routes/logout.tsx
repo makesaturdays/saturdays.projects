@@ -1,29 +1,27 @@
 
 import * as React from 'react'
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom'
-import * as cookies from 'browser-cookies'
 
-import { AppContext } from '../context'
-
-import { Button } from '../components/button'
-import { Form } from '../components/form'
-import { Input } from '../components/input'
+import { withContext, AppContextProps } from '../contexts/app'
 
 import Session from '../models/session'
 
 
 interface Props extends RouteComponentProps<any> {}
+interface State {}
 
-export const Logout: React.SFC<Props> = (props) => {
-  return <AppContext.Consumer>
-    {(context) => {
-      (new Session({_id: cookies.get('Session-Id')})).destroy()
-      context.user._id = undefined
-      context.user.attributes = {}
+@withContext
+export class Logout extends React.Component<Props & AppContextProps, State> {
 
-      return <Redirect to='/' />
-    }}
-  </AppContext.Consumer>
+  componentDidMount() {
+    new Session({_id: 'mine'}).destroy()
+    this.props.context.clearUser()
+  }
+
+  public render() {
+    return <Redirect to='/' />
+  }
+  
 }
 
 

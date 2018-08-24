@@ -18,7 +18,6 @@ import User from './models/user'
 import Session from './models/session'
 import Piece from './models/piece'
 import Product from './models/product'
-import Subscription from './models/subscription'
 import Project from './models/project'
 
 
@@ -39,47 +38,56 @@ const models = [
   Session,
   Piece,
   Project,
-  Product,
-  Subscription
+  Product
 ]
 
 models.forEach(model => {
-  model.endpoints().forEach(endpoint => server[endpoint.method.toLowerCase()](
-    `${endpoint.endpoint}`,
-    (req: Request, res: Response) => {
-      try {
-        endpoint.function(req)
-          .then((response: any)=> {
-            req.accepts('text/html') === 'text/html'
-              ? Promise.all([
-                  Piece.list({})
-                ]).then(([pieces])=> {
-                  res.send(ReactDOM.renderToString(
-                    <HTML
-                      pieces={pieces}
-                      response={response}>
-                      {React.createElement(model.components(response)[`${endpoint.method}${endpoint.endpoint}`])
-                      || JSON.stringify(response)}
-                    </HTML>
-                  ))
-                })
-              : res.json(response)
-          })
-          .catch(error => sendError(res, error))
-      } catch (error) {
-        sendError(res, error)
-      }
-    }
-  ))
+  Object.entries(model.endpoints()).forEach(([endpoint, methods])=> {
+    
+    Object.entries(methods).forEach(([method, configuration]) => {
+      configuration.middlewares && configuration.middlewares.forEach(middleware => server[method.toLowerCase() as keyof Application](`${endpoint}`, middleware))
+
+      server[method.toLowerCase() as keyof Application](
+        `${endpoint}`,
+        (req: Request, res: Response) => {
+          try {
+            configuration.function(req, res)
+              .then(response => {
+                req.accepts('text/html') === 'text/html'
+                  ? configuration.component
+                    ? Promise.all([
+                      Piece.pieces({})
+                    ]).then(([pieces])=> {
+                      res.send(ReactDOM.renderToString(
+                        <HTML
+                          url={req.originalUrl}
+                          pieces={pieces}
+                          response={response}>
+                          {React.createElement(configuration.component)}
+                        </HTML>
+                      ))
+                    })
+                    : res.json(response)
+                  : res.json(response)
+              })
+              .catch(error => sendError(res, error))
+          } catch (error) {
+            sendError(res, error)
+          }
+        }
+      )
+    })
+      
+  })
 })
 
 
 server.get('/*', (req: Request, res: Response) => {
   Promise.all([
-    Piece.list({})
+    Piece.pieces({})
   ]).then(([pieces, user])=> {
     res.send(ReactDOM.renderToString(
-      <HTML pieces={pieces}>
+      <HTML url={req.originalUrl} pieces={pieces}>
         <Routes />
       </HTML>
     ))

@@ -6,7 +6,7 @@ export const randomPassword = ()=> {
   return crypto.randomBytes(12).toString('hex')
 }
 
-export const hashPassword = (password, salt = undefined)=> {
+export const hashPassword = (password: string, salt?: string)=> {
   const _salt = salt ? salt : randomPassword()
   const hash = crypto.createHmac('sha256', _salt)
   hash.update(password)

@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "engines": {
-    "node": "8.10.0"
+    "node": "10.7.0"
   },
   "scripts": {
     "start": "NODE_ENV=production node dist/server.js",
-    "app": "parcel index.html -p 8080 --open",
-    "server": "parcel watch server/server.tsx --target=node --out-file=server.js --no-source-maps | nodemon dist/server.js",
-    "build": "parcel build app/app.tsx --out-file=app.js --no-source-maps --no-cache && parcel build server/server.tsx --target=node --out-file=server.js --no-source-maps --no-cache"
+    "app": "parcel index.html -p 8080 --open --no-cache",
+    "server": "parcel watch server/server.tsx --target=node --out-file=server.js --no-cache | nodemon dist/server.js",
+    "build": "parcel build app/app.tsx --out-file=app.js --no-cache && parcel build server/server.tsx --target=node --out-file=server.js --no-cache"
   },
   "keywords": [],
   "author": "Phillip Malboeuf <phil@boeuf.coffee>",
@@ -24,6 +24,7 @@
     "@types/mongodb": "^3.0.21",
     "@types/morgan": "^1.7.35",
     "@types/nconf": "0.0.37",
+    "@types/object-path": "^0.9.29",
     "@types/react": "^16.4.1",
     "@types/react-dom": "^16.0.6",
     "@types/react-router-dom": "^4.2.7",
@@ -42,13 +43,13 @@
     "mongodb": "^3.0.10",
     "morgan": "^1.9.0",
     "nconf": "^0.10.0",
-    "node-sass": "^4.9.0",
-    "parcel-bundler": "^1.9.2",
+    "node-sass": "^4.9.3",
+    "object-path": "^0.11.4",
+    "parcel-bundler": "^1.9.3",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-router-dom": "^4.3.1",
     "stripe": "^6.1.1",
-    "typescript": "^2.9.2",
-    "with-context": "0.0.3"
+    "typescript": "^3.0.1"
   }
 }

@@ -1,12 +1,11 @@
 
 
 import * as React from 'react'
-import { context } from '../context'
 
 import { Link, RouteComponentProps } from 'react-router-dom'
 
 import Project from '../models/project'
-import { Week } from '../components/calendar';
+import { Week } from '../components/calendar'
 
 
 interface Props extends RouteComponentProps<any> {

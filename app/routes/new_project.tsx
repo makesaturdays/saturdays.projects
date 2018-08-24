@@ -2,8 +2,6 @@
 import * as React from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
 
-import { AppContext } from '../context'
-
 import { Form } from '../components/form'
 import { Input } from '../components/input'
 
@@ -29,17 +27,15 @@ export class NewProjectView extends React.Component<Props, State> {
 
 
   public render() {
-    return <AppContext.Consumer>
-      {(context) => <div className='padded padded--big_top'>
+    return <div className='padded padded--big_top'>
       <div className=''>
-        <Form model={this.state.project} cta='Create'>
+        <Form id='create_project' model={this.state.project} cta='Create'>
           <Input label='Project name' name='name' />
           <Input type='textarea' label='Description' name='description' />
-          <Input type='tags' label='Tags' name='tags' tags={[{key: 'design', title: 'Design'}, {key: 'code', title: 'Code'}]} />
+          {/* <Input type='tags' label='Tags' name='tags' tags={[{key: 'design', title: 'Design'}, {key: 'code', title: 'Code'}]} /> */}
         </Form>
       </div>
-    </div>}
-    </AppContext.Consumer>
+    </div>
   }
 }
 

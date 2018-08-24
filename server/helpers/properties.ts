@@ -1,7 +1,18 @@
+import { ObjectId } from 'mongodb'
 
-export const ARRAY = (items) => ({
+export const ARRAY = (items: any) => ({
   type: 'array',
   items
+})
+
+export const OPTIONAL = (property: any) => ({
+  ...property,
+  required: false
+})
+
+export const ONEOF = (property: any, list: any[])=> ({
+  ...property,
+  enum: list
 })
 
 export const EMAIL = {
@@ -25,8 +36,47 @@ export const TEXT = {
   required: true
 }
 
+export const INT = (minimum? : number, maximum? : number)=> ({
+  type: 'integer',
+  minimum,
+  maximum,
+  required: true,
+  sanitize: (value: any)=> parseInt(value)
+})
+
 export const OBJECT_ID = {
   type: 'string',
   maximum: 10000,
-  required: true
+  required: true,
+  sanitize: (value: any)=> new ObjectId(value)
+}
+
+export const DATE = {
+  type: 'date',
+  required: true,
+  sanitize: (value: any)=> new Date(value)
+}
+
+export const ADDRESS = {
+  type: 'object',
+  required: true,
+  properties: {
+    first_name: TEXT,
+    last_name: TEXT,
+    address_1: TEXT,
+    address_2: OPTIONAL(TEXT),
+    city: TEXT,
+    country: TEXT,
+    state: TEXT,
+    postal_code: TEXT,
+    note: OPTIONAL(TEXT)
+  }
+}
+
+export const PAYMENT_METHOD = {
+  type: 'object',
+  required: true,
+  properties: {
+    token: TEXT
+  }
 }
