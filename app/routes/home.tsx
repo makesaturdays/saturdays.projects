@@ -5,7 +5,7 @@ import * as React from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
 
 import Project from '../models/project'
-import { Week } from '../components/calendar'
+import { Week, Month } from '../components/calendar'
 
 
 interface Props extends RouteComponentProps<any> {
@@ -39,6 +39,7 @@ export class Home extends React.Component<Props, State> {
         <h1>Make Saturdays</h1>
         {this.state.projects && this.state.projects.map(project => <Link to={`/projects/${project._id}`} key={project._id}>{project.attributes.name}</Link>)}
         <Week />
+        {/* <Month /> */}
       </div>
     </div>
   }
