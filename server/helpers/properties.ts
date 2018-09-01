@@ -44,6 +44,14 @@ export const INT = (minimum? : number, maximum? : number)=> ({
   sanitize: (value: any)=> parseInt(value)
 })
 
+export const FLOAT = (minimum? : number, maximum? : number)=> ({
+  type: 'number',
+  minimum,
+  maximum,
+  required: true,
+  sanitize: (value: any)=> parseFloat(value)
+})
+
 export const OBJECT_ID = {
   type: 'string',
   maximum: 10000,

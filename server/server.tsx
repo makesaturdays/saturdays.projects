@@ -19,7 +19,7 @@ import Session from './models/session'
 import Piece from './models/piece'
 import Product from './models/product'
 import Project from './models/project'
-
+import Event from './models/event'
 
 
 interface Server extends Application {}
@@ -38,6 +38,7 @@ const models = [
   Session,
   Piece,
   Project,
+  Event,
   Product
 ]
 
